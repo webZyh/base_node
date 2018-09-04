@@ -1,4 +1,4 @@
-技术栈：nodejs	HTTP
+﻿技术栈：nodejs	HTTP
 
 课程内容：
 	nodejs 核心API
@@ -15,7 +15,7 @@
 
 nodejs:适合高并发，I/O密集的web场景
 一个进程	一个客人
-CPU			点菜
+CPU		点菜
 I/O操作		厨师做菜
 
 --------------------------------
