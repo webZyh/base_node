@@ -1,0 +1,47 @@
+14:同步文件写入
+
+文件系统：通过node来操作系统中的文件
+
+使用文件系统，需要引入fs模块
+	* var fs = require("fs")
+
+两种模式：同步和异步
+
+同步文件的写入
+	* 打开文件：var fd = fs.openSync(path,flags[,mode])
+		* path 要打开文件的路径
+		* flags 打开文件要做的操作的类型
+			- r 只读的
+			- w 可写的
+		* mode 设置文件的操作权限，一般不传
+		* fd 返回值
+			- 该方法返回一个文件的描述符作为结果，可以通过该描述符来对文件进行各种操作
+	* 写入内容：fs.writeSync(fd,string[,position[,encoding]])
+		* fd 文件的描述符，需要传入要写入的文件的描述符
+		* string 要写入的内容
+		* position 从该位置开始写入
+		* enconding 编码，默认UTF-8
+	* 保存并关闭（服务器）：fs.closeSync(fd)
+-------------------------------------------------------------------
+15
+异步文件写入
+	* 打开文件：fs.open(path,flags，function(){
+					//写入文件
+					fs.write(fd,string,function(){
+						//关闭文件
+						fs.close(fd,function(){
+
+						})
+					})
+				})
+	fs.open 异步调用方法，结果都是通过回调函数的参数返回的，回调函数返回两个参数
+	  	* err
+	  	* fd
+
+	fs.write 三个参数
+		* err
+		* written	写入了多少字节
+		* string 写入的内容
+
+	fs.close 一个参数
+		* err
