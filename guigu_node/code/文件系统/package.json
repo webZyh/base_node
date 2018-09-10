@@ -1,0 +1,7 @@
+{
+  "name": "文件系统",
+  "version": "0.0.1",
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
+}
