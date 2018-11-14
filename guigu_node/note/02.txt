@@ -1,3 +1,4 @@
+
 14:同步文件写入
 
 文件系统：通过node来操作系统中的文件
@@ -44,4 +45,46 @@
 		* string 写入的内容
 
 	fs.close 一个参数
-		* err
+
+-------------------------------------------------------------------
+16、简单文件写入
+fs.writeFile(file,data[,option],callback)
+
+w:写；从头开始写
+a:打开文件追加
+-------------------------------------------------------------------
+17、流式文件写入
+
+创建一个可写流fs.createWriteStream(path[,options])
+    var ws = fs.createWriteStream("hello.txt")
+    ws.write(string1);
+    ws.write(string2);
+    ws.write(string3);
+可以通过监听流的open和close事件来监听流的打开和关闭
+    打开
+        ws.once("open",function(）{})    //once绑定一次事件 用于监听
+    关闭
+        ws.once("close",function(){})   //用于监听
+        ws.end()    //关闭
+-------------------------------------------------------------------
+18、简单文件读取
+fs.readFile(path,callback(err,data)) //data返回的是一个buffer，可以使用toString()转化成字符串
+-------------------------------------------------------------------
+19、流式文件读取
+创建可读流
+    var rs = fs.createReadStream("an.jpg")
+    打开
+        rs.once("open",function(）{})    //once绑定一次事件 用于监听打开
+    关闭
+        rs.once("close",function(){})   //用于监听
+如果要读取一个可读流中的数据，必须要为可读流绑定一个data事件，data事件绑定完毕，它会自动开始读取数据
+    rs.on("data",function(data){
+        //data为读取到的数据
+        ws.write(data);
+    })
+-----------------------------
+pipe()可以将可读流中的内容，直接输出到可写流中
+rs.pipe(ws)
+-------------------------------------------------------------------
+20、fs中的其他方法
+fs.stat(path,callback(err,stats){})
