@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="button" value="1" >
+<input type="button" value="2" >
+<input type="button" value="3" >
+<input type="button" value="4" >
+</body>
+<script src="www/js/jquery.min.js"></script>
+<script>
+    var aInp = document.getElementsByTagName('input');
+    for (var i = 0; i< aInp.length; i++){
+        aInp[i].index = i;
+        aInp[i].onclick=function () {
+            console.log(this.value);
+        }
+    }
+</script>
+</html>

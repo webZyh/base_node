@@ -1,0 +1,77 @@
+﻿前端：ajax(url,data)---ajax(index.html,{a:'123',b='234'})   =>  index.html?a=123&b=234
+后端：index.html?a=123&b=234                                =>  url: index.html
+                                                                query: {a:'123',b='234'}
+
+前端处理：
+url='index.html';
+data={a:123,b:234};
+let dataStr = '';
+console.log(Object.keys(data));
+Object.keys(data).forEach((key) => {
+    console.log(key);
+    dataStr += key + '=' + data[key] + '&'
+    console.log(dataStr);
+})
+if (dataStr !== '') {
+    dataStr = dataStr.substring(0, dataStr.lastIndexOf('&'))
+    url = url + '?' + dataStr
+    console.log(url);   //index.html?a=123&b=234
+}
+
+
+---------------------------------------------------------------------------
+npm adduser         注册
+npm login           登录
+npm publish         发布模块到npm上
+npm update          更新
+npm --force unpublish       删除
+npm install
+---------------------------------------------------------------------------
+
+express
+    var server = express();
+    server.listen(8080)     //开启服务器
+
+    server.get('路径',(req,res)=>{
+        req.query   //解析GET数据
+    })
+    server.post()
+    server.use()
+
+链式操作：
+server.use('/',function(req,res,next){
+    console.log('a')
+})
+server.use('/',function(req,res,next){
+    console.log('b')
+})
+-----------------
+express-static
+    server.use(expressStatic('./www'))  //在www目录下去找静态文件
+
+*res.send()     express提供的方法，可以发送任何数据
+res.write()     原生node的方法，只能是string和buffer
+res.end();
+-----------------
+body-parser 中间键
+
+req.query   //GET数据
+req.body    //POST数据    需要使用body-parser处理一下server.use(bodyParser.urlencoded({}))
+
+server.use(bodyParser.urlencoded({
+   //两个参数
+   extended: true       //扩展模式，默认false
+   limit:   100k        //限制post的体积大小，默认100k，可自己设置
+})
+
+---------------------------------------------------------------------------
+模板引擎：后台生成页面
+1、jade：破坏式
+    a/根据缩进划分层级
+    b/属性用(href="xxx") 表示，用逗号分隔
+    c/特殊属性，style={}
+                class=[]
+
+    jade.render('字符串')
+    jade.renderFile('模板文件名'，参数)
+2、ejs

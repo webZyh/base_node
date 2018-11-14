@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+用户名：<input type="text" id="user"></br>
+密 码：<input type="password" id="psd"></br>
+<input type="button" value="登录" id="login_btn">
+<input type="button" value="注册" id="reg_btn">
+</body>
+<script src="js/jquery.min.js"></script>
+<script>
+    $(function () {
+        //登录
+        $("#login_btn").on('click', function () {
+            $.ajax({
+                url: '/login',
+                data: {user: $('#user').val(), psd: $('#psd').val()},
+                type: 'GET',
+                success: function (data) {
+                    console.log(typeof data);
+                    //const json = JSON.parse(data);
+                    //alert(`${data.ok}：${data.msg}`)
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        })
+        //注册
+        $("#reg_btn").on("click", function () {
+            $.ajax({
+                url: '/register',
+                data: {'user': $('#user').val(), 'psd': $('#psd').val()},
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        })
+    })
+</script>
+</html>
