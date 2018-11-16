@@ -1,0 +1,6 @@
+1、events.js:167
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::8080
+表示端口被占用
