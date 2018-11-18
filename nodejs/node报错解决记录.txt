@@ -1,0 +1,2 @@
+1、Path must be a string
+解决：path模块解析的必须是一个URL字符串
