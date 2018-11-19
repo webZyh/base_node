@@ -9,6 +9,7 @@ const consolidate = require('consolidate');
 
 //开启服务器，监听端口
 var server = express();
+// server.listen(80);
 server.listen(8080);
 
 //cookie、session
