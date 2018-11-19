@@ -1,6 +1,9 @@
-1��events.js:167
+
+1、Path must be a string
+解决：path模块解析的必须是一个URL字符串
+
+2、events.js:167
       throw er; // Unhandled 'error' event
       ^
-
 Error: listen EADDRINUSE :::8080
-��ʾ�˿ڱ�ռ��
+端口号被占用

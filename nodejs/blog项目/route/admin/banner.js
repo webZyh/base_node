@@ -22,7 +22,7 @@ module.exports=function () {
                     }else if(data.length==0){
                         res.status(404).send('data not found').end();
                     }else {
-                        //在查询一遍banners
+                        //再查询一遍banners
                         db.query('SELECT * FROM banner_table', (err, banners) => {
                             if (err) {
                                 console.log(err);

@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const mysql = require('mysql');
 const consolidate = require('consolidate');
 
 //开启服务器，监听端口
@@ -44,7 +43,10 @@ server.set('view engine','html');
 server.use('/blog/',require('./route/1.js')());
 server.use('/test/',require('./route/2.js')());
 */
+//后台管理页面
 server.use('/admin/',require('./route/admin/index.js')());
+//前台接口
+server.use('/web/',require('./route/web/index.js')());
 
 //处理前端请求的静态页面
 server.use(static('./static'));
