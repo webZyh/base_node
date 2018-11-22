@@ -1,4 +1,4 @@
-关系型数据库（RDBMS）
+﻿关系型数据库（RDBMS）
     * MySQL、Oracle、DB2、SQL Server
     * 关系型数据库中全是表
 非关系型数据库（No SQL）：SQL结构化关系语言
@@ -35,9 +35,12 @@ BSON（二进制JSON，类似于JSON）
     3.以管理员的身份打开命令行窗口
 
     4.执行如下的命令
-        sc.exe create MongoDB binPath= "\"C:\Program Files\MongoDB\Server\3.2\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.2\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
+sc.exe create MongoDB binPath= "\"C:\Program Files\MongoDB\Server\3.2\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.2\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
 
-        sc.exe create MongoDB binPath= "\"F:\Program Files\MongoDB\Server\3.2\bin\mongod.exe\" --service --config=\"F:\Program Files\MongoDB\Server\3.2\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
+
+
+        sc.exe create MongoDB binPath= "\"F:\zyh\Program Files\MongoDB\Server\3.2\bin\mongod.exe\" --service --config=\"F:\zyh\Program Files\MongoDB\Server\3.2\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
+
         sc.exe create MongoDB binPath= "\"mongod的bin目录\mongod.exe\" --service --config=\"mongo的安装目录\mongod.cfg\"" DisplayName= "MongoDB" start= "auto"
 
     5.启动mongodb服务
