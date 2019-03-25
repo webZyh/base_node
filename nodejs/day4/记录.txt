@@ -22,10 +22,22 @@ readFile(文件名, function (err, data){
 })
 writeFile(文件名, 内容, function (err){})
 -----------------
+处理POST请求    
 querystring模块：解析'user=zyh&pass=123456'格式的数据
 const querystring = require('querystring');
 const json = querystring.parse('user=zyh&pass=123456')
+
+---
+const str = ''
+req.on(data,function(data){
+    str+=data;
+})       //data-有一段数据到达（多次）
+req.on(end,function(){
+    const POST = querystring.parse(str)
+    console.log(POST)
+})        //end-数据全部到达（一次）
 -----------------
+处理GET请求     req.url——> http://www.baidu.com/index.html?a=12&b=5
 url模块：解析url（'http://www.baidu.com/index.html?a=12&b=5'）
 const url = require('url')
 const obj = url.parse('http://www.baidu.com/index.html?a=12&b=5',true):参数为true，解析query
@@ -36,6 +48,8 @@ obj.query           参数a=12&b=5
 参数为true时，解析query为对象格式{a:'12',b:'5'}
 
 -----------------
+
+
 -----------------
 -----------------
 -----------------
