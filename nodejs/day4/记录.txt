@@ -1,4 +1,46 @@
-﻿前端：ajax(url,data)---ajax(index.html,{a:'123',b='234'})   =>  index.html?a=123&b=234
+﻿Atom
+ctrl+shift+B运行
+ctrl+Q关闭
+------------------------------------------
+node系统模块：
+-----------------
+http模块:创建一个简单的后台服务器
+const http = require('http')
+const server = http.createServer(function(req,res){
+    res.write('a'); //往前台写东西
+    res.end();      //结束 
+
+    req    前台发送过来的请求的参数集合
+    req.url  请求路径 
+})
+server.listen(8080);
+-----------------
+fs模块：操作文件 服务器操作硬盘   
+readFile(文件名, function (err, data){
+    err：错误
+    data：读回来的数据（buffer格式，二进制数据）
+})
+writeFile(文件名, 内容, function (err){})
+-----------------
+querystring模块：解析'user=zyh&pass=123456'格式的数据
+const querystring = require('querystring');
+const json = querystring.parse('user=zyh&pass=123456')
+-----------------
+url模块：解析url（'http://www.baidu.com/index.html?a=12&b=5'）
+const url = require('url')
+const obj = url.parse('http://www.baidu.com/index.html?a=12&b=5',true):参数为true，解析query
+
+obj:    解析后的数组集合
+obj.pathname        url地址
+obj.query           参数a=12&b=5
+参数为true时，解析query为对象格式{a:'12',b:'5'}
+
+-----------------
+-----------------
+-----------------
+-----------------
+
+前端：ajax(url,data)---ajax(index.html,{a:'123',b='234'})   =>  index.html?a=123&b=234
 后端：index.html?a=123&b=234                                =>  url: index.html
                                                                 query: {a:'123',b='234'}
 
