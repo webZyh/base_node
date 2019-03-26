@@ -4,7 +4,9 @@ ctrl+Q关闭
 ------------------------------------------
 node系统模块：
 -----------------
+
 http模块:创建一个简单的后台服务器
+
 const http = require('http')
 const server = http.createServer(function(req,res){
     res.write('a'); //往前台写东西
@@ -15,15 +17,19 @@ const server = http.createServer(function(req,res){
 })
 server.listen(8080);
 -----------------
-fs模块：操作文件 服务器操作硬盘   
+
+fs模块：操作文件 服务器操作硬盘 
+
 readFile(文件名, function (err, data){
     err：错误
     data：读回来的数据（buffer格式，二进制数据）
 })
 writeFile(文件名, 内容, function (err){})
 -----------------
-处理POST请求    
+处理POST请求  
+
 querystring模块：解析'user=zyh&pass=123456'格式的数据
+
 const querystring = require('querystring');
 const json = querystring.parse('user=zyh&pass=123456')
 
@@ -38,7 +44,9 @@ req.on(end,function(){
 })        //end-数据全部到达（一次）
 -----------------
 处理GET请求     req.url——> http://www.baidu.com/index.html?a=12&b=5
+
 url模块：解析url（'http://www.baidu.com/index.html?a=12&b=5'）
+
 const url = require('url')
 const obj = url.parse('http://www.baidu.com/index.html?a=12&b=5',true):参数为true，解析query
 
@@ -48,40 +56,27 @@ obj.query           参数a=12&b=5
 参数为true时，解析query为对象格式{a:'12',b:'5'}
 
 -----------------
+系统模块化
+http fs querystring url
 
+自定义模块
+module.export={}
+require('./my.js')
 
+包管理器    npm
+npm install xxx             安装
+npm uninstall   xxx         删除
 -----------------
------------------
------------------
-
-前端：ajax(url,data)---ajax(index.html,{a:'123',b='234'})   =>  index.html?a=123&b=234
-后端：index.html?a=123&b=234                                =>  url: index.html
-                                                                query: {a:'123',b='234'}
-
-前端处理：
-url='index.html';
-data={a:123,b:234};
-let dataStr = '';
-console.log(Object.keys(data));
-Object.keys(data).forEach((key) => {
-    console.log(key);
-    dataStr += key + '=' + data[key] + '&'
-    console.log(dataStr);
-})
-if (dataStr !== '') {
-    dataStr = dataStr.substring(0, dataStr.lastIndexOf('&'))
-    url = url + '?' + dataStr
-    console.log(url);   //index.html?a=123&b=234
-}
-
-
----------------------------------------------------------------------------
+发布自己的包
 npm adduser         注册
 npm login           登录
-npm publish         发布模块到npm上
-npm update          更新
+
+npm init            初始化，会生成一个package.json
+npm publish         发布模块到npm上，在当前需要发布的文件夹内
+在package.json里修改版本号，再次publish可以更新发布到npm官网上的包
+npm update   XX包       更新下载的包
 npm --force unpublish       删除
-npm install
+npm install     安装包
 ---------------------------------------------------------------------------
 
 express
