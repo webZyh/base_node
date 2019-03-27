@@ -1,4 +1,4 @@
-﻿Atom
+Atom
 ctrl+shift+B运行
 ctrl+Q关闭
 ------------------------------------------
@@ -78,25 +78,27 @@ npm update   XX包       更新下载的包
 npm --force unpublish       删除
 npm install     安装包
 ---------------------------------------------------------------------------
-
+npm install express   
+video 8
+express：非破坏式框架，保留了原生的功能，添加了一些方法（send）,增强原有的功能
 express
+    1、创建服务
     var server = express();
+    2、监听
     server.listen(8080)     //开启服务器
-
+    3、处理请求，3种方法
     server.get('路径',(req,res)=>{
         req.query   //解析GET数据
+
+        res.send('123');    //相当于原生的res.write()
+        res.end()
     })
     server.post()
     server.use()
 
-链式操作：
-server.use('/',function(req,res,next){
-    console.log('a')
-})
-server.use('/',function(req,res,next){
-    console.log('b')
-})
------------------
+-----------------------------------------------------------------
+express中间件（插件） npmjs.com
+-----------
 express-static
     server.use(expressStatic('./www'))  //在www目录下去找静态文件
 
@@ -106,16 +108,90 @@ res.render('1.ejs模板文件',{name:'zyh'  ejs中的变量})   将1.ejs中的�
 res.write()     原生node的方法，只能是string和buffer
 res.end();
 -----------------
-body-parser 中间键
+body-parser     处理post请求的数据
 
-req.query   //GET数据
-req.body    //POST数据    需要使用body-parser处理一下server.use(bodyParser.urlencoded({}))
+req.query   //GET数据在req.query中，无需中间件支持
+req.body    //POST数据在req.body中，需要使用body-parser加工一下
+server.use(bodyParser.urlencoded({}))
+server.use(function(){
+    req.body        //post数据
+})
 
 server.use(bodyParser.urlencoded({
    //两个参数
    extended: true       //扩展模式，默认false
-   limit:   100k        //限制post的体积大小，默认100k，可自己设置
+   limit:   100k        //  限制post的体积大小，默认100k，可自己设置，2*1024：2K
 })
+
+-------------------------
+
+链式操作：可以使用多个use，使用next连接
+需要访问同一个路径'/'
+server.use('/',function(req,res,next){
+    console.log('a')
+    next();
+})
+server.use('/',function(req,res,next){
+    console.log('b')
+})
+
+server.use(function(){})    不加'/',对所有路径生效
+--------------
+自己写中间件  video 10
+module.exports={
+    myFun:function(req,res,next){
+        var str = '';
+        req.on(data,function(data){
+            str+=data;
+        })
+        req.on(end,function(){
+            req.body = querystring.parse(str);
+            next();
+        })
+    }
+}
+
+--------------
+video 11
+cookie:
+    在浏览器保存一些数据，每次请求都会带过来
+    保存在浏览器  大小有限（4k）
+    不安全，用户可以修改， document.cookie='key=value'
+    
+    1、读取cookie：中间件cookie-parser
+        server.use(cookieParser())
+        server.use('/',function(){
+            console.log(req.cookies); //读取浏览器的cookie，未签名的
+
+            console.log(req.signedCookies)//签名的cookie
+
+        })
+    2、发送cookie到浏览器：
+    res.secret = 'fdafsfsfsfs'  签名秘钥,可以省略
+    res.cookie('user','value',{path:'/a',maxAge:24*3600*1000, signed:true})
+    signed:是否需要签名
+
+    3、删除
+        res.clearCookie('key')
+
+session:
+    保存数据，保存在服务器
+    安全 大小无限
+    不能独立存在，基于cookie实现的，需要放在server.use(cookieParser())后面
+    cookie中会存一个session的id，服务器利用session的id找到session文件
+
+    cookie-session中间件
+    server.use(cookieSession({
+        name:'zhangsan',    //存在cookie中的session名字
+        keys:['a','b'],      //秘钥数组
+        maxAge: 存在时间
+    }))
+    server.use('/',function(req,res){
+        console.log(req.session)
+    })
+
+    删除：delete req.session['key-name']
+
 
 ---------------------------------------------------------------------------
 模板引擎：后台生成页面
