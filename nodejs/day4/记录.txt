@@ -112,7 +112,7 @@ body-parser     处理post请求的数据
 
 req.query   //GET数据在req.query中，无需中间件支持
 req.body    //POST数据在req.body中，需要使用body-parser加工一下
-server.use(bodyParser.urlencoded({}))
+server.use(bodyParser.urlencoded({}))   //此步骤封装的是：将post数据存入req.body中
 server.use(function(){
     req.body        //post数据
 })
@@ -194,23 +194,31 @@ session:
 
 
 ---------------------------------------------------------------------------
-模板引擎：后台生成页面
-1、jade：破坏式
+模板引擎：后台生成页面     
+1、jade：破坏式          video 12、13
     a/根据缩进划分层级
     b/属性用(href="xxx") 表示，用逗号分隔
     c/特殊属性，style={}
                 class=[]
 jade.render('字符串')
-jade.renderFile('模板文件名'，参数)
+jade.renderFile('模板文件名'，{pretty:true,其他参数});
+
 | xxx   =>  原样输出xxx
 .的用法    script.     script标签后面的全部原样输出
 -的用法    -if    把if当代码使用，不会当成标签
-！<div></div>     不转义输出
+！的用法   ！<div></div>     不转义输出
 include a.js    引入js文件
-2、ejs
 
-<%= name %>输出
+2、ejs                   video 14
+
+const ejs = require('ejs')
+ejs.renderFile('./view/1.ejs',{name:'zhangsan'},function(err,data){
+    console.log(data)
+})
+
+<%= name %> 输出
 <%- name %> 不转义输出
+<% include a.txt %> 导入一个文件的内容
 
 ---------------------------------------------------------------------------
 post 数据解析
