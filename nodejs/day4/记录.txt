@@ -221,20 +221,34 @@ ejs.renderFile('./view/1.ejs',{name:'zhangsan'},function(err,data){
 <% include a.txt %> 导入一个文件的内容
 
 ---------------------------------------------------------------------------
-post 数据解析
-body-parser     解析字符串格式   application/x-www/from-urlencoded
+post数据解析
+------------
+body-parser 解析字符串格式的post数据 
+application/x-www/from-urlencoded
+
 用法：server.use(bodyParser.urlencoded({extended:false, limit:限制大小))
+
 解析完在req.body里
 --------------------
-multer          解析文件格式      multipart/form-data
+文件上传    video 15
+
+multer          解析文件格式的post数据      multipart/form-data
 var mulObj = multer({dest:'接收上传文件的路径'})
 
-用法：server.use(mulObj.any())        any():解析任何文件
-                                single(name)    解析名字为name的单个文件
-解析完在req.files里
----------------------
-path.parse(str)    解析str路径
+用法：server.use(mulObj.any())        
+any():解析任何文件
+single(name)    解析名字为name的单个文件
 
+解析完在req.files里
+
+---------------------
+node原生模块
+path    fs
+
+获取文件名
+path.parse(str)    解析文件路径(c:\\wamp\\www\\a.html)获得一个对象
+
+fs模块给文件重命名
 fs.rename('原始名','更改名',function(err){})
 
 -------------------------
