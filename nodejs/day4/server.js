@@ -48,12 +48,16 @@ server.get('/', function (req, res,next) {
             console.log(err);
             res.status(500).send('database error').end();
         }else{
+            //res.render('index.ejs',{banners:data})
+            //banners的数据和article的数据需要一起发送出去，此处使用next()链式操作解决嵌套回调的问题
             res.banners = data;
             //console.log(res.banners);
+            
             next()
         }
     });
 });
+//链式操作需要相同的路径'/'
 server.get('/',function (req,res,next) {
     db.query("SELECT ID,title,summery FROM article_table",(err,data)=>{
         if (err){

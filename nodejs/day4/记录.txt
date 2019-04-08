@@ -252,22 +252,36 @@ fs模块给文件重命名
 fs.rename('原始名','更改名',function(err){})
 
 -------------------------
-consolidate    模板引擎整合库
+consolidate 中间件  模板引擎整合库      video 16
+作用：适配各种模板引擎
+
+npm install consolidate 
+const consolidate = require('consolidate')
+
+
 配置模板引擎
 1、哪种模板引擎
 server.engine('html',consolidate.ejs)
 server.engine('excel',consolidate.jade)
 2、输出什么东西
 server.set('view engine','html')
+server.set('view engine','excel')
 3、模板文件放在哪
-server.set('views','路径./views')
+server.set('views','模板文件的路径1')
+server.set('views','路径2')
 
--------------------------
+------------------
+res.send('xxx')             直接发送
+res.render('.ejs',参数)     编译一个模板再发送
+---------------------
 route 路由
-创建：
+创建单个路由：
 var routerUser = express.Router()
+var routerArticle = express.Router()
 
 server.use('/use',routerUser);  //添加路由时必须使用use，不能使用get
+server.use('/article',routerArticle);
+
 
 routerUser.get('/1.html',function(req,res){      //http://xxx.com/user/1.html
     res.send('user1')
@@ -276,23 +290,45 @@ routerUser.get('/2.html',function(req,res){
     res.send('user2')
 })
 
-//子路由:创建routerUser的子路由
+
+//子路由:创建routerUser的子路由,,嵌套
 var childRouter = express.Router();
 routerUser.use('/child',childRouter)
 childRouter.get(...)
 
 ---------------------------------------------------------------------------
-node 数据库    mysql
-连接数据库
-var db = mysql.createConnection({host:'',user:'',password:'',database:''})
-查询
+video 17- 博客项目
+video 17、18 数据库基础
+video 19 建表
+
+mysql
+
+库：类似文件夹，用来管理，本身没法存数据
+表：文件-存数据
+
+    行：一条数据
+    列：每列是一个字段，一个数据项
+
+主键：唯一标识符，唯一，性能高
+-----------------
+下载mysql中间件
+npm install mysql
+
+
+1、连接数据库
+var db = mysql.createConnection({host:'',user:'',password:'',database:''，port:})
+
+2、查询
 db.query('SQL语句',(err,data)=>{
 
 })
+
+-----------------
+
 SQL->结构化查询语句
 SQL标准写法
 1、关键字大写
-2、库、表、字段需要加上``
+2、库、表、字段需要加上``,可以不加
 
 增删改查
 
@@ -306,9 +342,10 @@ SQL标准写法
     UPDATE article_table SET n_like=n_like+1 WHERE ID=1
 查
     SELECT 什么 FROM 表
+    SELECT 字段名 FROM user_table
     SELECT * FROM `user_table`
     SELECT * FROM `user_table` WHERE ID=1   查询id=1的所有数据项
--------------------------
+-----------------
 子句
 ----
 WHERE   条件

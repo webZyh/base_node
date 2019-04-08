@@ -8,7 +8,7 @@ const ejs = require('ejs')
 
 const server = express();
 
-//1、处理get post 数据
+//1、处理post 数据
 server.use(bodyParser.urlencoded({'extended':false}));
 server.use(multer('./www/upload/').any());
 
