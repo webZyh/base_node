@@ -3,6 +3,7 @@ C3
 ES6		
 javascript		
 nodejs		ÖÇÄÜÉçnodejs
+webpack
 vue
 element-ui
 mint-ui

@@ -297,7 +297,7 @@ routerUser.use('/child',childRouter)
 childRouter.get(...)
 
 ---------------------------------------------------------------------------
-video 17- 博客项目
+video 17-23 博客项目
 video 17、18 数据库基础
 video 19 建表
 
@@ -330,7 +330,7 @@ SQL标准写法
 1、关键字大写
 2、库、表、字段需要加上``,可以不加
 
-增删改查
+增删改查     video 24、25、26   数据库基础
 
 增
     INSERT INTO 表 (字段列表) VALUES (值列表)
@@ -339,22 +339,22 @@ SQL标准写法
     DELETE FROM 表 WHERE 条件
 改
     UPDATE 表 SET 字段=值
-    UPDATE article_table SET n_like=n_like+1 WHERE ID=1
+    UPDATE article_table SET n_like=n_like+1 WHERE ID=XXX
 查
     SELECT 什么 FROM 表
     SELECT 字段名 FROM user_table
     SELECT * FROM `user_table`
     SELECT * FROM `user_table` WHERE ID=1   查询id=1的所有数据项
 -----------------
-子句
-----
+子句    
+---------
 WHERE   条件
 WHERE age = 18;
 WHERE age<=18
 WHERE age>=18
 WHERE age>=18 AND age<=90
 WHERE age>=18 or score<=80
-
+---------
 ORDER   排序
 ORDER BY age ASC/DESC
     ASC->升序
@@ -362,20 +362,58 @@ ORDER BY age ASC/DESC
 
 按价格排序，如果价格相同，再按销量排序
 ORDER BY price ASC,sales DESC
-
-GROUP   聚类-合并相同
+---------
+GROUP   聚类    合并相同
     COUNT()计数     AVG()平均数      MIN()最小值       MAX()最大值     SUM()总价
+
+根据class去重
+SELECT * FROM table GROUP BY class(以该项为合并的依据)
+
 统计每个班的人数
 SELECT class,COUNT(class) FROM table GROUP BY class
 
+class   COUNT(class) 表中留下这两项，并执行COUNT计算
+  1       4
+  2       2
+  3       4
+
+计算班级平均分
+SELECT class,COUNT(score) FROM table GROUP BY class
+
+求每个班级的最高和最低分
+SELECT class,MAX(score),MIN(score) FROM student_table GROUP BY class
+
+----------
+可以混合使用
+SELECT name,SUM(price),MIN(score) FROM sales_table GROUP BY name ORDER BY SUM(price) DESC
+
+统计每个人的消费总数，并按消费价格降序排列
+
+
+---------
 LIMIT---限制输出---做分页
 LIMIT 10;   前10条
 LIMIT 5 8;  从5开始，要8个
 
 --------
-子句之间是有顺序的
+子句之间是有顺序的（混合使用时写的先后顺序）
 WHERE GOURP ORDER LIMIT
+筛选  合并  排序  限制
 ---------------------------------------------------------------------------
+video 26-36     learner网站实战开发
+----------- 
+video 26   项目开头介绍
+1、规定数据字典、建表    27、28
+2、搭建后台express()框架，提供接口
+3、vue搭建前台渲染页面
 
-页面：  前台渲染
+29 创建项目框架、router搭建
+30 登录路由、MD5签名加密
+
+
+
+
+
+
+页面：  前台渲染   vue     angular     react
         后台渲染    ejs

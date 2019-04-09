@@ -3,8 +3,8 @@ const urlLib = require('url');
 
 module.exports = function () {
     let router = express.Router();
-    //检查登录状态
-    router.use((req,res,next)=>{    //处理访问任何目录
+    //检查登录状态，登录拦截
+    router.use((req,res,next)=>{    //访问任何目录
         //阻止 favicon.ico 的请求
         /*const obj = urlLib.parse(req.url, true);
         const pathname = obj.pathname;*/

@@ -14,15 +14,17 @@ server.listen(8080);
 //cookie、session
 server.use(cookieParser("ffdsaffdadf")) //随意输入一个签名
 
-let keys = [];
-for (let i=0;i<10000;i++){
-    keys[i] = 'keys_'+Math.random();
-}
-server.use(cookieSession({
-    name:'admin_8899',
-    keys:  keys,
-    maxAge: 20*60*1000
-}));
+(function(){
+	let keys = [];
+	for (let i=0;i<10000;i++){
+	    keys[i] = 'keys_'+Math.random();
+	}
+	server.use(cookieSession({
+	    name:'admin_8899',
+	    keys:  keys,
+	    maxAge: 20*60*1000
+	}));
+})()
 
 //处理post请求数据(两种)
 server.use(bodyParser.urlencoded({
@@ -47,6 +49,7 @@ server.use('/test/',require('./route/2.js')());
 server.use('/admin/',require('./route/admin/index.js')());
 //前台接口
 server.use('/web/',require('./route/web/index.js')());
+
 
 //处理前端请求的静态页面
 server.use(static('./static'));
