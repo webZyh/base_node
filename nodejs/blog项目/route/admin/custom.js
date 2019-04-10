@@ -22,10 +22,13 @@ module.exports = function(){
         //判断是否上传（添加或修改时）了头像，上传了就有newFileName，否则就没有
         if(req.files){
             console.log(req.files);
-            var suffix = pathLib.parse(req.files[0].originalname).ext;  //后缀
-            var oldPath = req.files[0].path;   //没有后缀文件路径
+            var suffix = pathLib.parse(req.files[0].originalname).ext;  //拿到.jpg后缀
+
+            //path:包括路径的文件名
+            var oldPath = req.files[0].path;   //没有后缀文件路径名
             var newPath = oldPath + suffix;   //拼接好的文件路径
 
+            //filename:文件名
             var newFileName = req.files[0].filename+suffix; //需要写入数据库的文件名
             //显示时候的路径问题？
             //绝对路径和相对路径的区别？
@@ -57,7 +60,7 @@ module.exports = function(){
                                             console.log(err);
                                             res.status(500).send('file operation error ').end();
                                         } else {
-                                            //删除成功后,
+                                            //删除成功后,再修改
                                             db.query(`UPDATE custom_evaluation_table SET title='${title}', description='${description}', src='${newFileName}' WHERE ID=${mod_id}`,(err)=>{
                                                 if (err){
                                                     console.log(err);
@@ -126,7 +129,7 @@ module.exports = function(){
                 break;
             case 'del':
                 //删除
-                //先删除unload文件夹里的图片，成功后，再删除这条数据
+                //先选出要删除的一条数据，删除unload文件夹里的图片，成功后，再删除这条数据
                 db.query(`SELECT * FROM custom_evaluation_table WHERE ID='${req.query.id}'`,(err,data)=> {
                     if (err) {
                         console.log(err);
@@ -135,6 +138,7 @@ module.exports = function(){
                         if (data.length == 0) {
                             res.status(400).send('not found data').end();
                         } else {
+                            //fs.unlink删除文件，，此处是以server.js的相对路径
                             fs.unlink('static/upload/' + data[0].src , (err) => {
                                 if (err) {
                                     console.log(err);
@@ -165,6 +169,8 @@ module.exports = function(){
                             res.status(400).send('not found data').end();
                         }else{
                             res.render('admin/custom.ejs',{customs: data});
+
+                            // res.render('admin/custom.ejs',{data});
                         }
                     }
                 })

@@ -20,17 +20,17 @@ server.use(cookieParser("ffdsaffdadf")) //随意输入一个签名
 	    keys[i] = 'keys_'+Math.random();
 	}
 	server.use(cookieSession({
-	    name:'admin_8899',
+	    name:'admin_id',
 	    keys:  keys,
 	    maxAge: 20*60*1000
 	}));
 })()
-
+//get数据在req.query中
 //处理post请求数据(两种)
 server.use(bodyParser.urlencoded({
     extended: false,
     limit: 1000
-}));
+}));	//数据在req.body中
 server.use(multer({
     dest:'./static/upload'
 }).any());

@@ -13,7 +13,7 @@ module.exports=function () {
     let router = express.Router();
     router.get('/',(req,res)=>{
         res.render('admin/login.ejs',{});
-    })
+    })      //get时跳转到页面。post时处理登录操作
     router.post('/',(req,res)=>{
         let username = req.body.username;
         let password = common.md5(req.body.password+common.MD5_SUFFIX);
@@ -29,6 +29,7 @@ module.exports=function () {
                 }else{
                     if (data[0].password==password){
                         //成功
+                        //设置session_id
                         req.session['admin_id'] =  data[0].ID;
                         res.redirect('/admin');
                     }else{

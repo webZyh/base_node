@@ -70,7 +70,7 @@
             <div class="is-show"></div>
             <div class="change">
                 <form action="?" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="mod_id" value="<%= mod_data.ID%>">
+                    <input type="hidden" name="mod_id" value="<%= mod_data.ID%>"> <!-- 此处为了后台能接受到mod_id，辨别是修改还是添加操作 -->
                     标题：<input type="text" name="title" value="<%= mod_data.title %>"><br>
                     描述：<textarea cols="30" rows="10" type="text" name="desc"><%= mod_data.description%></textarea><br>
                     头像：<input type="file" name="src"><br>
