@@ -421,6 +421,10 @@ res.render('')      向页面渲染一个ejs模板
 res.redirect('')    重定向到一个页面
 .end()              结束
 
+res.json({  })      以json的格式输出
+    
+
+
 ----------
 
 页面：  前台渲染   vue     angular     react
