@@ -1,0 +1,40 @@
+﻿webpack
+-------------------
+常用功能
+	压缩
+	打包
+	文件编译	less->css
+				import	
+				ES6->ES5
+	脚手架
+	生成生产项目
+
+安装
+	npm i webpack-cli -g  
+
+-----------------
+webpack.config.js	webpack配置文件
+
+module.exports={
+	mode:'development',		打包模式，决定webpack法人优化级别，三种模式
+		development：最高优化，启用压缩、忽略错误
+		production：输出调试信息，打印process.env.NODE_ENV
+		none:不优化
+	entry:	'./src/index.js'	//入口，单入口-SPA;
+		{			//多入口-MPA
+			index：'./src/index.js'
+			news：'......'
+		},		
+	output:{		//输出
+		path: path.	resolve(__dirname,'dest')			//路径目录(必须要绝对路径),当前目录的dest目录	
+		filename:'[name].bundle.min.js'	输出到哪个文件中
+	}
+}
+
+使用 webpack 命令打包
+-----------------
+绝对路径方法
+
+const path = require('path');
+
+path.resolve(__dirname,'dest')		__dirname:表示当前路径

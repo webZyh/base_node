@@ -1,0 +1,431 @@
+Atom
+ctrl+shift+B运行
+ctrl+Q关闭
+------------------------------------------
+node系统模块：
+-----------------
+
+http模块:创建一个简单的后台服务器
+
+const http = require('http')
+const server = http.createServer(function(req,res){
+    res.write('a'); //往前台写东西
+    res.end();      //结束 
+
+    req    前台发送过来的请求的参数集合
+    req.url  请求路径 
+})
+server.listen(8080);
+-----------------
+
+fs模块：操作文件 服务器操作硬盘 
+
+readFile(文件名, function (err, data){
+    err：错误
+    data：读回来的数据（buffer格式，二进制数据）
+})
+writeFile(文件名, 内容, function (err){})
+-----------------
+处理POST请求  
+
+querystring模块：解析'user=zyh&pass=123456'格式的数据
+
+const querystring = require('querystring');
+const json = querystring.parse('user=zyh&pass=123456')
+
+---
+const str = ''
+req.on(data,function(data){
+    str+=data;
+})       //data-有一段数据到达（多次）
+req.on(end,function(){
+    const POST = querystring.parse(str)
+    console.log(POST)
+})        //end-数据全部到达（一次）
+-----------------
+处理GET请求     req.url——> http://www.baidu.com/index.html?a=12&b=5
+
+url模块：解析url（'http://www.baidu.com/index.html?a=12&b=5'）
+
+const url = require('url')
+const obj = url.parse('http://www.baidu.com/index.html?a=12&b=5',true):参数为true，解析query
+
+obj:    解析后的数组集合
+obj.pathname        url地址
+obj.query           参数a=12&b=5
+参数为true时，解析query为对象格式{a:'12',b:'5'}
+
+-----------------
+系统模块化
+http fs querystring url
+
+自定义模块
+module.export={}
+require('./my.js')
+
+包管理器    npm
+npm install xxx             安装
+npm uninstall   xxx         删除
+-----------------
+发布自己的包
+npm adduser         注册
+npm login           登录
+
+npm init            初始化，会生成一个package.json
+npm publish         发布模块到npm上，在当前需要发布的文件夹内
+在package.json里修改版本号，再次publish可以更新发布到npm官网上的包
+npm update   XX包       更新下载的包
+npm --force unpublish       删除
+npm install     安装包
+---------------------------------------------------------------------------
+npm install express   
+video 8
+express：非破坏式框架，保留了原生的功能，添加了一些方法（send）,增强原有的功能
+express
+    1、创建服务
+    var server = express();
+    2、监听
+    server.listen(8080)     //开启服务器
+    3、处理请求，3种方法
+    server.get('路径',(req,res)=>{
+        req.query   //解析GET数据
+
+        res.send('123');    //相当于原生的res.write()
+        res.end()
+    })
+    server.post()
+    server.use()
+
+-----------------------------------------------------------------
+express中间件（插件） npmjs.com
+-----------
+express-static
+    server.use(expressStatic('./www'))  //在www目录下去找静态文件
+
+*res.send()     express提供的方法，可以发送任何数据
+res.render('1.ejs模板文件',{name:'zyh'  ejs中的变量})   将1.ejs中的内容渲染并发送给前端
+
+res.write()     原生node的方法，只能是string和buffer
+res.end();
+-----------------
+body-parser     处理post请求的数据
+
+req.query   //GET数据在req.query中，无需中间件支持
+req.body    //POST数据在req.body中，需要使用body-parser加工一下
+server.use(bodyParser.urlencoded({}))   //此步骤封装的是：将post数据存入req.body中
+server.use(function(){
+    req.body        //post数据
+})
+
+server.use(bodyParser.urlencoded({
+   //两个参数
+   extended: true       //扩展模式，默认false
+   limit:   100k        //  限制post的体积大小，默认100k，可自己设置，2*1024：2K
+})
+
+-------------------------
+
+链式操作：可以使用多个use，使用next连接
+需要访问同一个路径'/'
+server.use('/',function(req,res,next){
+    console.log('a')
+    next();
+})
+server.use('/',function(req,res,next){
+    console.log('b')
+})
+
+server.use(function(){})    不加'/',对所有路径生效
+--------------
+自己写中间件  video 10
+module.exports={
+    myFun:function(req,res,next){
+        var str = '';
+        req.on(data,function(data){
+            str+=data;
+        })
+        req.on(end,function(){
+            req.body = querystring.parse(str);
+            next();
+        })
+    }
+}
+
+--------------
+video 11
+cookie:
+    在浏览器保存一些数据，每次请求都会带过来
+    保存在浏览器  大小有限（4k）
+    不安全，用户可以修改， document.cookie='key=value'
+    
+    1、读取cookie：中间件cookie-parser
+        server.use(cookieParser())
+        server.use('/',function(){
+            console.log(req.cookies); //读取浏览器的cookie，未签名的
+
+            console.log(req.signedCookies)//签名的cookie
+
+        })
+    2、发送cookie到浏览器：
+    res.secret = 'fdafsfsfsfs'  签名秘钥,可以省略
+    res.cookie('user','value',{path:'/a',maxAge:24*3600*1000, signed:true})
+    signed:是否需要签名
+
+    3、删除
+        res.clearCookie('key')
+
+session:
+    保存数据，保存在服务器
+    安全 大小无限
+    不能独立存在，基于cookie实现的，需要放在server.use(cookieParser())后面
+    cookie中会存一个session的id，服务器利用session的id找到session文件
+
+    cookie-session中间件
+    server.use(cookieSession({
+        name:'zhangsan',    //存在cookie中的session名字
+        keys:['a','b'],      //秘钥数组
+        maxAge: 存在时间
+    }))
+    server.use('/',function(req,res){
+        console.log(req.session)
+    })
+
+    删除：delete req.session['key-name']
+
+
+---------------------------------------------------------------------------
+模板引擎：后台生成页面     
+1、jade：破坏式          video 12、13
+    a/根据缩进划分层级
+    b/属性用(href="xxx") 表示，用逗号分隔
+    c/特殊属性，style={}
+                class=[]
+jade.render('字符串')
+jade.renderFile('模板文件名'，{pretty:true,其他参数});
+
+| xxx   =>  原样输出xxx
+.的用法    script.     script标签后面的全部原样输出
+-的用法    -if    把if当代码使用，不会当成标签
+！的用法   ！<div></div>     不转义输出
+include a.js    引入js文件
+
+2、ejs                   video 14
+
+const ejs = require('ejs')
+ejs.renderFile('./view/1.ejs',{name:'zhangsan'},function(err,data){
+    console.log(data)
+})
+
+<%= name %> 输出
+<%- name %> 不转义输出
+<% include a.txt %> 导入一个文件的内容
+
+---------------------------------------------------------------------------
+post数据解析
+------------
+body-parser 解析字符串格式的post数据 
+application/x-www/from-urlencoded
+
+用法：server.use(bodyParser.urlencoded({extended:false, limit:限制大小))
+
+解析完在req.body里
+--------------------
+文件上传    video 15
+
+multer          解析文件格式的post数据      multipart/form-data
+var mulObj = multer({dest:'接收上传文件的路径'})
+
+用法：server.use(mulObj.any())        
+any():解析任何文件
+single(name)    解析名字为name的单个文件
+
+解析完在req.files里
+
+---------------------
+node原生模块
+path    fs
+
+获取文件名
+path.parse(str)    解析文件路径(c:\\wamp\\www\\a.html)获得一个对象
+
+fs模块给文件重命名
+fs.rename('原始名','更改名',function(err){})
+
+-------------------------
+consolidate 中间件  模板引擎整合库      video 16
+作用：适配各种模板引擎
+
+npm install consolidate 
+const consolidate = require('consolidate')
+
+
+配置模板引擎
+1、哪种模板引擎
+server.engine('html',consolidate.ejs)
+server.engine('excel',consolidate.jade)
+2、输出什么东西
+server.set('view engine','html')
+server.set('view engine','excel')
+3、模板文件放在哪
+server.set('views','模板文件的路径1')
+server.set('views','路径2')
+
+------------------
+res.send('xxx')             直接发送
+res.render('.ejs',参数)     编译一个模板再发送
+---------------------
+route 路由
+创建单个路由：
+var routerUser = express.Router()
+var routerArticle = express.Router()
+
+server.use('/use',routerUser);  //添加路由时必须使用use，不能使用get
+server.use('/article',routerArticle);
+
+
+routerUser.get('/1.html',function(req,res){      //http://xxx.com/user/1.html
+    res.send('user1')
+})
+routerUser.get('/2.html',function(req,res){
+    res.send('user2')
+})
+
+
+//子路由:创建routerUser的子路由,,嵌套
+var childRouter = express.Router();
+routerUser.use('/child',childRouter)
+childRouter.get(...)
+
+---------------------------------------------------------------------------
+video 17-23 博客项目
+video 17、18 数据库基础
+video 19 建表
+
+mysql
+
+库：类似文件夹，用来管理，本身没法存数据
+表：文件-存数据
+
+    行：一条数据
+    列：每列是一个字段，一个数据项
+
+主键：唯一标识符，唯一，性能高
+-----------------
+下载mysql中间件
+npm install mysql
+
+
+1、连接数据库
+var db = mysql.createConnection({host:'',user:'',password:'',database:''，port:})
+
+2、查询
+db.query('SQL语句',(err,data)=>{
+
+})
+
+-----------------
+
+SQL->结构化查询语句
+SQL标准写法
+1、关键字大写
+2、库、表、字段需要加上``,可以不加
+
+增删改查     video 24、25、26   数据库基础
+
+增
+    INSERT INTO 表 (字段列表) VALUES (值列表)
+    INSERT INTO user_table (ID,username,password) VALUES (0,'zhangsan','123456');
+删
+    DELETE FROM 表 WHERE 条件
+改
+    UPDATE 表 SET 字段=值
+    UPDATE article_table SET n_like=n_like+1 WHERE ID=XXX
+查
+    SELECT 什么 FROM 表
+    SELECT 字段名 FROM user_table
+    SELECT * FROM `user_table`
+    SELECT * FROM `user_table` WHERE ID=1   查询id=1的所有数据项
+-----------------
+子句    
+---------
+WHERE   条件
+WHERE age = 18;
+WHERE age<=18
+WHERE age>=18
+WHERE age>=18 AND age<=90
+WHERE age>=18 or score<=80
+---------
+ORDER   排序
+ORDER BY age ASC/DESC
+    ASC->升序
+    DESC->降序
+
+按价格排序，如果价格相同，再按销量排序
+ORDER BY price ASC,sales DESC
+---------
+GROUP   聚类    合并相同
+    COUNT()计数     AVG()平均数      MIN()最小值       MAX()最大值     SUM()总价
+
+根据class去重
+SELECT * FROM table GROUP BY class(以该项为合并的依据)
+
+统计每个班的人数
+SELECT class,COUNT(class) FROM table GROUP BY class
+
+class   COUNT(class) 表中留下这两项，并执行COUNT计算
+  1       4
+  2       2
+  3       4
+
+计算班级平均分
+SELECT class,COUNT(score) FROM table GROUP BY class
+
+求每个班级的最高和最低分
+SELECT class,MAX(score),MIN(score) FROM student_table GROUP BY class
+
+----------
+可以混合使用
+SELECT name,SUM(price),MIN(score) FROM sales_table GROUP BY name ORDER BY SUM(price) DESC
+
+统计每个人的消费总数，并按消费价格降序排列
+
+
+---------
+LIMIT---限制输出---做分页
+LIMIT 10;   前10条
+LIMIT 5 8;  从5开始，要8个
+
+--------
+子句之间是有顺序的（混合使用时写的先后顺序）
+WHERE GOURP ORDER LIMIT
+筛选  合并  排序  限制
+---------------------------------------------------------------------------
+video 26-36     learner网站实战开发
+----------- 
+video 26   项目开头介绍
+1、规定数据字典、建表    27、28
+2、搭建后台express()框架，提供接口
+3、vue搭建前台渲染页面
+
+----------
+29 创建项目框架、router搭建
+30 创建登录路由、MD5签名加密
+32 banner页、添加功能，渲染，删除功能
+33 修改，banner、login路由提取
+34、35 custom
+36 提供接口，前台页面渲染
+----------
+
+res.send('')        向页面发送字符串
+res.render('')      向页面渲染一个ejs模板
+res.redirect('')    重定向到一个页面
+.end()              结束
+
+res.json({  })      以json的格式输出
+    
+
+
+----------
+
+页面：  前台渲染   vue     angular     react
+        后台渲染    ejs

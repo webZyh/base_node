@@ -1,0 +1,158 @@
+﻿前端：ajax(url,data)---ajax(index.html,{a:'123',b='234'})   =>  index.html?a=123&b=234
+后端：index.html?a=123&b=234                                =>  url: index.html
+                                                                query: {a:'123',b='234'}
+
+前端处理：
+url='index.html';
+data={a:123,b:234};
+let dataStr = '';
+console.log(Object.keys(data));
+Object.keys(data).forEach((key) => {
+    console.log(key);
+    dataStr += key + '=' + data[key] + '&'
+    console.log(dataStr);
+})
+if (dataStr !== '') {
+    dataStr = dataStr.substring(0, dataStr.lastIndexOf('&'))
+    url = url + '?' + dataStr
+    console.log(url);   //index.html?a=123&b=234
+}
+
+
+---------------------------------------------------------------------------
+npm adduser         注册
+npm login           登录
+npm publish         发布模块到npm上
+npm update          更新
+npm --force unpublish       删除
+npm install
+---------------------------------------------------------------------------
+
+express
+    var server = express();
+    server.listen(8080)     //开启服务器
+
+    server.get('路径',(req,res)=>{
+        req.query   //解析GET数据
+    })
+    server.post()
+    server.use()
+
+链式操作：
+server.use('/',function(req,res,next){
+    console.log('a')
+})
+server.use('/',function(req,res,next){
+    console.log('b')
+})
+-----------------
+express-static
+    server.use(expressStatic('./www'))  //在www目录下去找静态文件
+
+*res.send()     express提供的方法，可以发送任何数据
+res.render('1.ejs模板文件',{name:'zyh'  ejs中的变量})   将1.ejs中的内容渲染并发送给前端
+
+res.write()     原生node的方法，只能是string和buffer
+res.end();
+-----------------
+body-parser 中间键
+
+req.query   //GET数据
+req.body    //POST数据    需要使用body-parser处理一下server.use(bodyParser.urlencoded({}))
+
+server.use(bodyParser.urlencoded({
+   //两个参数
+   extended: true       //扩展模式，默认false
+   limit:   100k        //限制post的体积大小，默认100k，可自己设置
+})
+
+---------------------------------------------------------------------------
+模板引擎：后台生成页面
+1、jade：破坏式
+    a/根据缩进划分层级
+    b/属性用(href="xxx") 表示，用逗号分隔
+    c/特殊属性，style={}
+                class=[]
+jade.render('字符串')
+jade.renderFile('模板文件名'，参数)
+| xxx   =>  原样输出xxx
+.的用法    script.     script标签后面的全部原样输出
+-的用法    -if    把if当代码使用，不会当成标签
+！<div></div>     不转义输出
+include a.js    引入js文件
+2、ejs
+
+<%= name %>输出
+
+---------------------------------------------------------------------------
+post 数据解析
+body-parser     解析字符串格式   application/x-www/from-urlencoded
+用法：server.use(bodyParser.urlencoded({extended:false, limit:限制大小))
+解析完在req.body里
+--------------------
+multer          解析文件格式      multipart/form-data
+var mulObj = multer({dest:'接收上传文件的路径'})
+
+用法：server.use(mulObj.any())        any():解析任何文件
+                                single(name)    解析名字为name的单个文件
+解析完在req.files里
+---------------------
+path.parse(str)    解析str路径
+
+fs.rename('原始名','更改名',function(err){})
+
+-------------------------
+consolidate    模板引擎整合库
+配置模板引擎
+1、哪种模板引擎
+server.engine('html',consolidate.ejs)
+server.engine('excel',consolidate.jade)
+2、输出什么东西
+server.set('view engine','html')
+3、模板文件放在哪
+server.set('views','路径./views')
+
+-------------------------
+route 路由
+创建：
+var routerUser = express.Router()
+
+server.use('/use',routerUser);
+
+routerUser.get('/1.html',function(req,res){      //http://xxx.com/user/1.html
+    res.send('user1')
+})
+routerUser.get('/2.html',function(req,res){
+    res.send('user2')
+})
+
+//子路由:创建routerUser的子路由
+var childRouter = express.Router();
+routerUser.use('/child',childRouter)
+childRouter.get(...)
+
+-------------------------
+node 数据库    mysql
+连接数据库
+var db = mysql.createConnection({host:'',user:'',password:'',database:''})
+查询
+db.query('SQL语句',(err,data)=>{
+
+})
+SQL->结构化查询语句
+SQL标准写法
+1、关键字大写
+2、库、表、字段需要加上``
+
+增删改查
+
+增
+    INSERT INTO 表 (字段列表) VALUE (值列表)
+    INSERT INTO user_table (ID,username,password) VALUES (0,'zhangsan','123456');
+删
+    DELETE
+改
+    UPDATE
+查
+    SELECT 什么 FROM 表
+    SELECT * FROM `user_table`
