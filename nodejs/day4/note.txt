@@ -10,45 +10,51 @@ http模块:创建一个简单的后台服务器
 const http = require('http')
 const server = http.createServer(function(req,res){
     res.write('a'); //往前台写东西
-    res.end();      //结束 
+    res.end();      //结束（未结束时客户端一直等待）
 
     req    前台发送过来的请求的参数集合
-    req.url  请求路径 
+    req.url  请求的地址路径 /index.html?a=12&b=5
 })
 server.listen(8080);
 -----------------
 
 fs模块：操作文件 服务器操作硬盘 
 
-readFile(文件名, function (err, data){
-    err：错误
-    data：读回来的数据（buffer格式，二进制数据）
-})
-writeFile(文件名, 内容, function (err){})
------------------
-处理POST请求  
+const fs = require('fs');
 
+fs.readFile(文件名, function (err, data){
+    err：错误
+    data：读回来的数据（buffer格式的二进制数据） 
+	使用data.toString()可显示内容
+})
+
+fs.writeFile(文件名, 内容, function (err){})
+
+-----------------
+前台 form ajax jsonp
+
+请求方式：
+get
+post
+
+---
 querystring模块：解析'user=zyh&pass=123456'格式的数据
 
 const querystring = require('querystring');
 const json = querystring.parse('user=zyh&pass=123456')
 
+
 ---
-const str = ''
-req.on(data,function(data){
-    str+=data;
-})       //data-有一段数据到达（多次）
-req.on(end,function(){
-    const POST = querystring.parse(str)
-    console.log(POST)
-})        //end-数据全部到达（一次）
------------------
-处理GET请求     req.url——> http://www.baidu.com/index.html?a=12&b=5
+处理GET请求
+---------
+GET数据解析  数据在req.url中
 
 url模块：解析url（'http://www.baidu.com/index.html?a=12&b=5'）
 
 const url = require('url')
-const obj = url.parse('http://www.baidu.com/index.html?a=12&b=5',true):参数为true，解析query
+const obj = url.parse('http://www.baidu.com/index.html?a=12&b=5',true)
+参数为true，解析query部分 obj.query = {a: '12', b: '5'}
+不写	obj.query = 'a=12&b=5'
 
 obj:    解析后的数组集合
 obj.pathname        url地址
@@ -56,30 +62,77 @@ obj.query           参数a=12&b=5
 参数为true时，解析query为对象格式{a:'12',b:'5'}
 
 -----------------
+
+
+处理POST请求	数据使用data事件监听，在回调函数的data参数中
+
+post数据量很大
+
+data事件： 有一段数据到达反生一次
+end事件	数据全部到达才发生一次
+---
+const str = ''
+req.on(data,function(data){
+    str+=data;
+})       //data-有一段数据到达（多次）
+
+---
+req.on(end,function(){
+    const POST = querystring.parse(str)
+    console.log(POST)
+})        //end-数据全部到达（一次）
+-----------------    
+
 系统模块化
 http fs querystring url
 
+video6
+注册登录小案例
+
+
+video7 其他系统模块介绍
+Crypto	加密
+Events	事件
+Net	网络操作
+OS	操作系统信息
+Path	处理文件路径
+Stream	流处理
+Timers	定时器
+ZLIB	压缩
+
+video8
 自定义模块
-module.export={}
+exports.a = 1 单个导出
+module.export={
+	批量导出模块内容
+}
 require('./my.js')
 
 包管理器    npm
 npm install xxx             安装
 npm uninstall   xxx         删除
+
+require('http')
+先从系统模块找http
+找不到再从node_modules找
 -----------------
 发布自己的包
-npm adduser         注册
+npm adduser         注册npm账号
 npm login           登录
 
 npm init            初始化，会生成一个package.json
 npm publish         发布模块到npm上，在当前需要发布的文件夹内
+
 在package.json里修改版本号，再次publish可以更新发布到npm官网上的包
-npm update   XX包       更新下载的包
+
+npm update   XX包       更新下载的包（升级版本）
+
 npm --force unpublish       删除
 npm install     安装包
+
 ---------------------------------------------------------------------------
 npm install express   
-video 8
+video 9
 express：非破坏式框架，保留了原生的功能，添加了一些方法（send）,增强原有的功能
 express
     1、创建服务
@@ -87,14 +140,14 @@ express
     2、监听
     server.listen(8080)     //开启服务器
     3、处理请求，3种方法
-    server.get('路径',(req,res)=>{
+    server.get('路径',(req,res)=>{	// 处理get请求
         req.query   //解析GET数据
 
         res.send('123');    //相当于原生的res.write()
         res.end()
     })
-    server.post()
-    server.use()
+    server.post()	// 处理post请求
+    server.use()	// 都可以处理
 
 -----------------------------------------------------------------
 express中间件（插件） npmjs.com
@@ -105,10 +158,11 @@ express-static
 *res.send()     express提供的方法，可以发送任何数据
 res.render('1.ejs模板文件',{name:'zyh'  ejs中的变量})   将1.ejs中的内容渲染并发送给前端
 
-res.write()     原生node的方法，只能是string和buffer
+res.write()     原生node的方法，只能发送	string和buffer
 res.end();
 -----------------
-body-parser     处理post请求的数据
+video 10 
+body-parser     处理post请求的数据	
 
 req.query   //GET数据在req.query中，无需中间件支持
 req.body    //POST数据在req.body中，需要使用body-parser加工一下
@@ -159,18 +213,20 @@ cookie:
     不安全，用户可以修改， document.cookie='key=value'
     
     1、读取cookie：中间件cookie-parser
-        server.use(cookieParser())
+        server.use(cookieParser(签名secret))
         server.use('/',function(){
-            console.log(req.cookies); //读取浏览器的cookie，未签名的
+	    2、发送cookie到浏览器：
+    	    req.secret = 'fdafsfsfsfs'  签名秘钥,可以省略
+    	    res.cookie('user','value',{path:'/a',maxAge:24*3600*1000, signed:true})
+    	    	signed:是否需要签名,开启后cookie显示密文
+		
+	    // 读取cookie
+            console.log(req.cookies); //读取浏览器的cookie，只返回未签名的
 
-            console.log(req.signedCookies)//签名的cookie
+            console.log(req.signedCookies)//签名过的cookie
 
         })
-    2、发送cookie到浏览器：
-    res.secret = 'fdafsfsfsfs'  签名秘钥,可以省略
-    res.cookie('user','value',{path:'/a',maxAge:24*3600*1000, signed:true})
-    signed:是否需要签名
-
+    
     3、删除
         res.clearCookie('key')
 
@@ -181,12 +237,26 @@ session:
     cookie中会存一个session的id，服务器利用session的id找到session文件
 
     cookie-session中间件
+    // 设置session的属性（名称、存在时间）
     server.use(cookieSession({
         name:'zhangsan',    //存在cookie中的session名字
         keys:['a','b'],      //秘钥数组
-        maxAge: 存在时间
+        maxAge: 存在时间 2*3600*1000	2小时
     }))
+
+    // keys技巧
+    const arr = []
+    for(var i = 0; i< 100000; i++) {
+    	arr.push('sign_'+Math.random())
+    }
+
     server.use('/',function(req,res){
+
+	// 设置session
+	req.session['a'] = 1 // 设置了一个session {a: 1}； 此时浏览器的cookie中存在session和session.sig；其中session表示该session的名称，也可以在调用cookieSession中间件时设置名称
+
+
+	// 读取设置的session
         console.log(req.session)
     })
 
@@ -224,7 +294,7 @@ ejs.renderFile('./view/1.ejs',{name:'zhangsan'},function(err,data){
 post数据解析
 ------------
 body-parser 解析字符串格式的post数据 
-application/x-www/from-urlencoded
+enctype = "application/x-www/from-urlencoded" 上传值
 
 用法：server.use(bodyParser.urlencoded({extended:false, limit:限制大小))
 
@@ -232,10 +302,13 @@ application/x-www/from-urlencoded
 --------------------
 文件上传    video 15
 
-multer          解析文件格式的post数据      multipart/form-data
+multer          解析文件格式的post数据
+enctype = "multipart/form-data"	上传文件
 var mulObj = multer({dest:'接收上传文件的路径'})
+var mulObj = multer({dest:'./www/upload'})
 
-用法：server.use(mulObj.any())        
+用法：server.use(mulObj.any()) 
+       server.use(mulObj.single(name)) 
 any():解析任何文件
 single(name)    解析名字为name的单个文件
 
@@ -246,10 +319,16 @@ node原生模块
 path    fs
 
 获取文件名
-path.parse(str)    解析文件路径(c:\\wamp\\www\\a.html)获得一个对象
+const obj = path.parse(str)    解析文件路径(c:\\wamp\\www\\a.html)获得一个对象
+
+obj.ext 文件名后缀
 
 fs模块给文件重命名
 fs.rename('原始名','更改名',function(err){})
+
+给上传的文件名称添加后缀
+const newName = req.files[0].path + path.parse(req.files[0].originalname).ext
+fs.rename(req.files[0].path, newName, (err)=>{ ... })
 
 -------------------------
 consolidate 中间件  模板引擎整合库      video 16
@@ -262,19 +341,21 @@ const consolidate = require('consolidate')
 配置模板引擎
 1、哪种模板引擎
 server.engine('html',consolidate.ejs)
-server.engine('excel',consolidate.jade)
+// server.engine('excel',consolidate.jade)
 2、输出什么东西
-server.set('view engine','html')
-server.set('view engine','excel')
+server.set('view engine','html')	输出html
+// server.set('view engine','excel')	输出excel
 3、模板文件放在哪
 server.set('views','模板文件的路径1')
-server.set('views','路径2')
+// server.set('views','路径2')
 
 ------------------
 res.send('xxx')             直接发送
-res.render('.ejs',参数)     编译一个模板再发送
+res.render('1.ejs',参数)     编译一个模板再发送
+
 ---------------------
-route 路由
+
+route 路由	把不同的访问目录，对应到不同的模块
 创建单个路由：
 var routerUser = express.Router()
 var routerArticle = express.Router()
@@ -298,7 +379,7 @@ childRouter.get(...)
 
 ---------------------------------------------------------------------------
 video 17-23 博客项目
-video 17、18 数据库基础
+video 17、18 数据库安装、node mysql中间件，连接数据库
 video 19 建表
 
 mysql
@@ -311,6 +392,7 @@ mysql
 
 主键：唯一标识符，唯一，性能高
 -----------------
+video18
 下载mysql中间件
 npm install mysql
 
